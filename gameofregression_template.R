@@ -20,13 +20,20 @@ p = dim(x)[2] # number of predictors
 
 linear_regression ="
 model {
-  # Prior
-  
-  
+model{      
+  # Prior 
+    t ~ dgamma(0.01, 0.01)
+    w0 ~ dnorm(0, 1.0)
+    w1 ~ dnorm(0, 1.0)
+    for (i in 1:n){
+      mu[i] = w0 + w1*x[i]
+    }
 
   # Likelihood
-}
-
+    for (i in 1:n){
+      y[i] ~ dnorm(mu[i], t)
+    }
+  }
 "
 
 niter = 10000
