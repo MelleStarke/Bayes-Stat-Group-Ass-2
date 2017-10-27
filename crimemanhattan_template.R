@@ -44,15 +44,28 @@ jagsmodel_crime <- jags.model(textConnection(crime_model),
                               n.chains = nchains)
 
 # Specify which parameters you want the sampler to store
-store_parameters = c('y')
+store_parameters = c(
+                      'w0', 'w1'
+                      ,'y'
+                      )
 
 # Collect samples and store them in a matrix of niter*nchains by number-of-stored-parameters
 samples_crime = coda.samples(jagsmodel_crime, store_parameters, n.iter = niter)
 samplesMatrix = as.matrix(samples_crime)
+mcmcsummary_crime = summary(samples_crime)
+mcmcsummary_crime$statistics
 
+hist(samplesMatrix[,'w0'])
+hist(samplesMatrix[,'w1'])
 
 
 plot(x,y, xlab = "Percentage change in manpower", ylab = "Percentage change in thefts", pch=20)
 
+samples = sample(seq(nrow(samplesMatrix)), 500)
+for (i in samples){
+  abline(samplesMatrix[i,'w0'], samplesMatrix[i,'w1'], col=rgb(0.8, 0.2, 0.2, max = 1.0, alpha = 0.1))
+}
 
-
+# Hoi Melle suck my balls
+#
+# Short answer: the model is most uncertain from 10 --> because of the outlier
