@@ -127,6 +127,7 @@ for (i in samples_twolines){
   abline(samplesMatrix[i,'w0[2]'], samplesMatrix[i,'w1[2]'], col=rgb(0,0,1, max = 1.0, alpha = 0.1))
 }
 
+
 #estimation
 mean_w0 <- mcmcsummary_twolines$statistics[1:2,'Mean']
 mean_w1 <- mcmcsummary_twolines$statistics[3:4,'Mean']
@@ -136,40 +137,95 @@ abline(mean_w0[2],mean_w1[2], col = rgb(0.5, 0.5, 1), lwd = 4)
 abline(mean_w0[1],mean_w1[1], col = 'black')
 abline(mean_w0[2],mean_w1[2], col = 'black')
 
+# Answer to 1.2.4. We see that we end up with two regression lines with a very good fit (based on visual inspection). However, the plot of the expectation of the lines (with a and b being means of w0 and w1) lie 'in between' the two found regression lines. The reason for this is that there is still some classification error, which means that some data points are considered to be on the other regression line. Some blue lines are plotted on the dominantly red line and vice versa. This in turn, has the result that the expectation of the one line is ' pulled' a bit to the other. Some blue lines are plotted on the dominantly red line and vice versa.
+
 
 ## -------- Model selection --------
 
+
 linreg_model3 ="
-model{      
-  # Prior 
-  
-  # Likelihood
+model{     
+    t ~ dgamma(0.01, 0.01)
 
+  #m1
+    w0_m1 ~ dnorm(0, 1.0)
+    w1_m1 ~ dnorm(0, 1.0)
+    for (i in 1:n){
+    mu_m1[i] = w0_m1 + w1_m1*x[i]
+    }
+
+  #m2
+    w0_m2[1] ~ dnorm(0, 1.0)
+    w1_m2[1] ~ dnorm(0, 1.0)
+    
+    w0_m2[2] ~ dnorm(0, 1.0)
+    w1_m2[2] ~ dnorm(0, 1.0)
+    
+    
+    for (i in 1:n){
+      z[i] ~ dcat(c(0.5,0.5))
+      mu_m2[i] = w0_m2[z[i]] + w1_m2[z[i]]*x[i]
+      }
+    
+    m_prob[1] = 0.5
+    m_prob[2] = 0.5
+
+    m ~ dcat(m_prob[])
+
+    # Likelihood
+    for (i in 1:n){
+    mu_picked[i] = equals(m,1)*mu_m1[i] + equals(m,2)*mu_m2[i] 
+    y[i] ~ dnorm(mu_picked[i], t)
+    }
+}
 "
-
-niter = 10000
+#we increased the number of iterations from 10.000 to 40.000 because we considered the standard deviation on the estimate for m too large
+niter = 40000
 nchains = 4
 # Create your data structure here
-data = list()
+data = list(
+          'x' = x,
+          'y' = y,
+          'n' = n
+)
 
 jagsmodel_linreg3 <- jags.model(textConnection(linreg_model3), 
                                 data = data,
                                 n.chains = nchains)
 
-store_parameters = c()
+store_parameters = c('m','w0_m1','w1_m1','w0_m2','w1_m2')
 
 # Collect samples and store them in a matrix of niter*nchains by number-of-stored-parameters
 samples_oneortwolines = coda.samples(jagsmodel_linreg3, store_parameters, n.iter = niter)
 samplesMatrix = as.matrix(samples_oneortwolines)
 
-plot(x,y,pch=20)
+#Summary statistics
+mcmcsummary_model1 = summary(samples_oneortwolines)
+mcmcsummary_model1 $ statistics
 
-
+#Posterior of models
+m = samplesMatrix[,"m"]
 posterior_model1_mcmc = sum(m==1) / length(m)
 posterior_model2_mcmc = 1 - posterior_model1_mcmc
 
-
+#Plotting
 nsamples = 250
 plot(x,y,pch=20)
 
+samplesMatrix_m1 = samplesMatrix[samplesMatrix[,"m"] == 1,]
+samplesMatrix_m2 = samplesMatrix[samplesMatrix[,"m"] == 2,]
 
+#sampling nsamples each for m==1 and m==2 
+samples_m1 = sample(seq(nrow(samplesMatrix_m1)), nsamples)
+samples_m2 = sample(seq(nrow(samplesMatrix_m2)), nsamples)
+
+# plotting line from m1
+for (i in samples_m1){
+  abline(samplesMatrix[i,'w0_m1'], samplesMatrix[i,'w1_m1'], col=rgb(1,0,0, alpha = 0.1))
+}
+
+# plotting lines from m2
+for (i in samples_m2){
+  abline(samplesMatrix[i,'w0_m2[1]'], samplesMatrix[i,'w1_m2[1]'], col=rgb(0,0,1, alpha = 0.1))
+  abline(samplesMatrix[i,'w0_m2[2]'], samplesMatrix[i,'w1_m2[2]'], col=rgb(0,0,1, alpha = 0.1))
+}
