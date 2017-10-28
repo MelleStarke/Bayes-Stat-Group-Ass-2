@@ -137,6 +137,7 @@ for (i in samples_twolines){
 
 ## -------- Model selection --------
 
+
 linreg_model3 ="
 model{     
     t ~ dgamma(0.01, 0.01)
@@ -173,8 +174,8 @@ model{
     }
 }
 "
-
-niter = 10000
+#we increased the number of iterations from 10.000 to 40.000 because we considered the standard deviation on the estimate for m too large
+niter = 40000
 nchains = 4
 # Create your data structure here
 data = list(
@@ -187,20 +188,39 @@ jagsmodel_linreg3 <- jags.model(textConnection(linreg_model3),
                                 data = data,
                                 n.chains = nchains)
 
-store_parameters = c('m')
+store_parameters = c('m','w0_m1','w1_m1','w0_m2','w1_m2')
 
 # Collect samples and store them in a matrix of niter*nchains by number-of-stored-parameters
 samples_oneortwolines = coda.samples(jagsmodel_linreg3, store_parameters, n.iter = niter)
 samplesMatrix = as.matrix(samples_oneortwolines)
 
-plot(x,y,pch=20)
-m = samplesMatrix[,"m"]
+#Summary statistics
+mcmcsummary_model1 = summary(samples_oneortwolines)
+mcmcsummary_model1 $ statistics
 
+#Posterior of models
+m = samplesMatrix[,"m"]
 posterior_model1_mcmc = sum(m==1) / length(m)
 posterior_model2_mcmc = 1 - posterior_model1_mcmc
 
-
+#Plotting
 nsamples = 250
 plot(x,y,pch=20)
 
+samplesMatrix_m1 = samplesMatrix[samplesMatrix[,"m"] == 1,]
+samplesMatrix_m2 = samplesMatrix[samplesMatrix[,"m"] == 2,]
 
+#sampling nsamples each for m==1 and m==2 
+samples_m1 = sample(seq(nrow(samplesMatrix_m1)), nsamples)
+samples_m2 = sample(seq(nrow(samplesMatrix_m2)), nsamples)
+
+# plotting line from m1
+for (i in samples_m1){
+  abline(samplesMatrix[i,'w0_m1'], samplesMatrix[i,'w1_m1'], col=rgb(1,0,0, alpha = 0.1))
+}
+
+# plotting lines from m2
+for (i in samples_m2){
+  abline(samplesMatrix[i,'w0_m2[1]'], samplesMatrix[i,'w1_m2[1]'], col=rgb(0,0,1, alpha = 0.1))
+  abline(samplesMatrix[i,'w0_m2[2]'], samplesMatrix[i,'w1_m2[2]'], col=rgb(0,0,1, alpha = 0.1))
+}
