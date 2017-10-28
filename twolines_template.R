@@ -137,23 +137,56 @@ for (i in samples_twolines){
 ## -------- Model selection --------
 
 linreg_model3 ="
-model{      
-  # Prior 
-  
-  # Likelihood
+model{     
+    t ~ dgamma(0.01, 0.01)
+  #m1
+    
+    w0_m1 ~ dnorm(0, 1.0)
+    w1_m1 ~ dnorm(0, 1.0)
+    for (i in 1:n){
+    mu_m1[i] = w0 + w1*x[i]
+    }
+
+  #m2
+    w0_m2[1] ~ dnorm(0, 1.0)
+    w1_m2[1] ~ dnorm(0, 1.0)
+    
+    w0_m2[2] ~ dnorm(0, 1.0)
+    w1_m2[2] ~ dnorm(0, 1.0)
+    
+    
+    for (i in 1:n){
+      z[i] ~ dcat(c(0.5,0.5))
+      mu_m2[i] = w0_m2[z[i]] + w1_m2[z[i]]*x[i]
+      }
+    
+    m_prob[1] = 0.5
+    m_prob[2] = 0.5
+
+    m ~ dcat(m_prob[])
+
+    # Likelihood
+    for (i in 1:n){
+    mu_picked[i] = equals(m,1)*mu_m1[i] + equals(m,2)*mu_m2[i] 
+    y[i] ~ dnorm(mu_picked[i], t)
+    }
 
 "
 
 niter = 10000
 nchains = 4
 # Create your data structure here
-data = list()
+data = list(
+          'x' = x,
+          'y' = y,
+          'n' = n
+)
 
 jagsmodel_linreg3 <- jags.model(textConnection(linreg_model3), 
                                 data = data,
                                 n.chains = nchains)
 
-store_parameters = c()
+store_parameters = c('m[1]')
 
 # Collect samples and store them in a matrix of niter*nchains by number-of-stored-parameters
 samples_oneortwolines = coda.samples(jagsmodel_linreg3, store_parameters, n.iter = niter)
