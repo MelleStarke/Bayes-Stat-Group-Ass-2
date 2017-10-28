@@ -120,18 +120,21 @@ mcmcsummary_twolines$statistics
 
 plot(x,y,pch=20)
 
-mean_w0 <- mcmcsummary_twolines$statistics[1:2,'Mean']
-mean_w1 <- mcmcsummary_twolines$statistics[3:4,'Mean']
-
-abline(mean_w0[1],mean_w1[1], col = 'red')
-abline(mean_w0[2],mean_w1[2], col = 'blue')
-
 #sampling
 samples_twolines = sample(seq(nrow(samplesMatrix)), 500)
 for (i in samples_twolines){
-  abline(samplesMatrix[i,'w0[1]'], samplesMatrix[i,'w1[1]'], col=rgb(1,0,0, alpha = 0.1))
-  abline(samplesMatrix[i,'w0[2]'], samplesMatrix[i,'w1[2]'], col=rgb(0,0,1, alpha = 0.1))
+  abline(samplesMatrix[i,'w0[1]'], samplesMatrix[i,'w1[1]'], col=rgb(1,0,0, max = 1.0, alpha = 0.1))
+  abline(samplesMatrix[i,'w0[2]'], samplesMatrix[i,'w1[2]'], col=rgb(0,0,1, max = 1.0, alpha = 0.1))
 }
+
+#estimation
+mean_w0 <- mcmcsummary_twolines$statistics[1:2,'Mean']
+mean_w1 <- mcmcsummary_twolines$statistics[3:4,'Mean']
+
+abline(mean_w0[1],mean_w1[1], col = rgb(1, 0.5, 0.5), lwd = 4)
+abline(mean_w0[2],mean_w1[2], col = rgb(0.5, 0.5, 1), lwd = 4)
+abline(mean_w0[1],mean_w1[1], col = 'black')
+abline(mean_w0[2],mean_w1[2], col = 'black')
 
 
 ## -------- Model selection --------

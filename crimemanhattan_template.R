@@ -55,8 +55,8 @@ samplesMatrix = as.matrix(samples_crime)
 mcmcsummary_crime = summary(samples_crime)
 mcmcsummary_crime$statistics
 
-hist(samplesMatrix[,'w0'])
-hist(samplesMatrix[,'w1'])
+hist(samplesMatrix[,'w0'], main = "Histogram of the posterior \ndistribution over w0", xlab = "w0")
+hist(samplesMatrix[,'w1'], main = "Histogram of the posterior \ndistribution over w1", xlab = "w1")
 
 
 plot(x,y, xlab = "Percentage change in manpower", ylab = "Percentage change in thefts", pch=20)
@@ -64,7 +64,7 @@ plot(x,y, xlab = "Percentage change in manpower", ylab = "Percentage change in t
 mean_w0 <- mcmcsummary_crime$statistics['w0','Mean']
 mean_w1 <- mcmcsummary_crime$statistics['w1','Mean']
 
-abline(mean_w0,mean_w1)
+abline(mean_w0,mean_w1, lwd = 3, col = 'red')
 
 samples = sample(seq(nrow(samplesMatrix)), 500)
 for (i in samples){
