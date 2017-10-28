@@ -140,12 +140,12 @@ for (i in samples_twolines){
 linreg_model3 ="
 model{     
     t ~ dgamma(0.01, 0.01)
+
   #m1
-    
     w0_m1 ~ dnorm(0, 1.0)
     w1_m1 ~ dnorm(0, 1.0)
     for (i in 1:n){
-    mu_m1[i] = w0 + w1*x[i]
+    mu_m1[i] = w0_m1 + w1_m1*x[i]
     }
 
   #m2
@@ -171,7 +171,7 @@ model{
     mu_picked[i] = equals(m,1)*mu_m1[i] + equals(m,2)*mu_m2[i] 
     y[i] ~ dnorm(mu_picked[i], t)
     }
-
+}
 "
 
 niter = 10000
@@ -187,14 +187,14 @@ jagsmodel_linreg3 <- jags.model(textConnection(linreg_model3),
                                 data = data,
                                 n.chains = nchains)
 
-store_parameters = c('m[1]')
+store_parameters = c('m')
 
 # Collect samples and store them in a matrix of niter*nchains by number-of-stored-parameters
 samples_oneortwolines = coda.samples(jagsmodel_linreg3, store_parameters, n.iter = niter)
 samplesMatrix = as.matrix(samples_oneortwolines)
 
 plot(x,y,pch=20)
-
+m = samplesMatrix[,"m"]
 
 posterior_model1_mcmc = sum(m==1) / length(m)
 posterior_model2_mcmc = 1 - posterior_model1_mcmc
