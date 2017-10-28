@@ -61,6 +61,11 @@ hist(samplesMatrix[,'w1'])
 
 plot(x,y, xlab = "Percentage change in manpower", ylab = "Percentage change in thefts", pch=20)
 
+mean_w0 <- mcmcsummary_crime$statistics['w0','Mean']
+mean_w1 <- mcmcsummary_crime$statistics['w1','Mean']
+
+abline(mean_w0,mean_w1)
+
 samples = sample(seq(nrow(samplesMatrix)), 500)
 for (i in samples){
   abline(samplesMatrix[i,'w0'], samplesMatrix[i,'w1'], col=rgb(0.8, 0.2, 0.2, max = 1.0, alpha = 0.1))
