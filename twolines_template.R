@@ -120,20 +120,25 @@ mcmcsummary_twolines$statistics
 
 plot(x,y,pch=20)
 
-mean_w0 <- mcmcsummary_twolines$statistics[1:2,'Mean']
-mean_w1 <- mcmcsummary_twolines$statistics[3:4,'Mean']
-
-abline(mean_w0[1],mean_w1[1], col = 'red')
-abline(mean_w0[2],mean_w1[2], col = 'blue')
-
 #sampling
 samples_twolines = sample(seq(nrow(samplesMatrix)), 500)
 for (i in samples_twolines){
-  abline(samplesMatrix[i,'w0[1]'], samplesMatrix[i,'w1[1]'], col=rgb(1,0,0, alpha = 0.1))
-  abline(samplesMatrix[i,'w0[2]'], samplesMatrix[i,'w1[2]'], col=rgb(0,0,1, alpha = 0.1))
+  abline(samplesMatrix[i,'w0[1]'], samplesMatrix[i,'w1[1]'], col=rgb(1,0,0, max = 1.0, alpha = 0.1))
+  abline(samplesMatrix[i,'w0[2]'], samplesMatrix[i,'w1[2]'], col=rgb(0,0,1, max = 1.0, alpha = 0.1))
 }
 
+
+#estimation
+mean_w0 <- mcmcsummary_twolines$statistics[1:2,'Mean']
+mean_w1 <- mcmcsummary_twolines$statistics[3:4,'Mean']
+
+abline(mean_w0[1],mean_w1[1], col = rgb(1, 0.5, 0.5), lwd = 4)
+abline(mean_w0[2],mean_w1[2], col = rgb(0.5, 0.5, 1), lwd = 4)
+abline(mean_w0[1],mean_w1[1], col = 'black')
+abline(mean_w0[2],mean_w1[2], col = 'black')
+
 # Answer to 1.2.4. We see that we end up with two regression lines with a very good fit (based on visual inspection). However, the plot of the expectation of the lines (with a and b being means of w0 and w1) lie 'in between' the two found regression lines. The reason for this is that there is still some classification error, which means that some data points are considered to be on the other regression line. Some blue lines are plotted on the dominantly red line and vice versa. This in turn, has the result that the expectation of the one line is ' pulled' a bit to the other. Some blue lines are plotted on the dominantly red line and vice versa.
+
 
 ## -------- Model selection --------
 
