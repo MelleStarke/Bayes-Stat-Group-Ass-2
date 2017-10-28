@@ -118,22 +118,27 @@ samplesMatrix = as.matrix(samples_twolines)
 mcmcsummary_twolines = summary(samples_twolines)
 mcmcsummary_twolines$statistics
 
-plot(x,y,pch=20)
-
-mean_w0 <- mcmcsummary_twolines$statistics[1:2,'Mean']
-mean_w1 <- mcmcsummary_twolines$statistics[3:4,'Mean']
-
-abline(mean_w0[1],mean_w1[1], col = 'red')
-abline(mean_w0[2],mean_w1[2], col = 'blue')
+plot(x,y,pch=20, xlab = "change in predictor", ylab = "change in outcome variable")
 
 #sampling
 samples_twolines = sample(seq(nrow(samplesMatrix)), 500)
 for (i in samples_twolines){
-  abline(samplesMatrix[i,'w0[1]'], samplesMatrix[i,'w1[1]'], col=rgb(1,0,0, alpha = 0.1))
-  abline(samplesMatrix[i,'w0[2]'], samplesMatrix[i,'w1[2]'], col=rgb(0,0,1, alpha = 0.1))
+  abline(samplesMatrix[i,'w0[1]'], samplesMatrix[i,'w1[1]'], col=rgb(1,0,0, max = 1.0, alpha = 0.1))
+  abline(samplesMatrix[i,'w0[2]'], samplesMatrix[i,'w1[2]'], col=rgb(0,0,1, max = 1.0, alpha = 0.1))
 }
 
+
+#estimation
+mean_w0 <- mcmcsummary_twolines$statistics[1:2,'Mean']
+mean_w1 <- mcmcsummary_twolines$statistics[3:4,'Mean']
+
+abline(mean_w0[1],mean_w1[1], col = rgb(1, 0.5, 0.5), lwd = 5)
+abline(mean_w0[2],mean_w1[2], col = rgb(0.5, 0.5, 1), lwd = 5)
+abline(mean_w0[1],mean_w1[1], col = rgb(1, 0, 0))
+abline(mean_w0[2],mean_w1[2], col = rgb(0, 0, 1))
+
 # Answer to 1.2.4. We see that we end up with two regression lines with a very good fit (based on visual inspection). However, the plot of the expectation of the lines (with a and b being means of w0 and w1) lie 'in between' the two found regression lines. The reason for this is that there is still some classification error, which means that some data points are considered to be on the other regression line. Some blue lines are plotted on the dominantly red line and vice versa. This in turn, has the result that the expectation of the one line is ' pulled' a bit to the other. Some blue lines are plotted on the dominantly red line and vice versa.
+
 
 ## -------- Model selection --------
 
@@ -205,7 +210,7 @@ posterior_model2_mcmc = 1 - posterior_model1_mcmc
 
 #Plotting
 nsamples = 250
-plot(x,y,pch=20)
+plot(x,y,pch=20, xlab = "change in predictor", ylab = "change in outcome variable")
 
 samplesMatrix_m1 = samplesMatrix[samplesMatrix[,"m"] == 1,]
 samplesMatrix_m2 = samplesMatrix[samplesMatrix[,"m"] == 2,]
@@ -216,11 +221,15 @@ samples_m2 = sample(seq(nrow(samplesMatrix_m2)), nsamples)
 
 # plotting line from m1
 for (i in samples_m1){
-  abline(samplesMatrix[i,'w0_m1'], samplesMatrix[i,'w1_m1'], col=rgb(1,0,0, alpha = 0.1))
+  abline(samplesMatrix[i,'w0_m1'], samplesMatrix[i,'w1_m1'], col=rgb(1,0,0, max = 1.0, alpha = 0.1))
 }
 
 # plotting lines from m2
 for (i in samples_m2){
-  abline(samplesMatrix[i,'w0_m2[1]'], samplesMatrix[i,'w1_m2[1]'], col=rgb(0,0,1, alpha = 0.1))
-  abline(samplesMatrix[i,'w0_m2[2]'], samplesMatrix[i,'w1_m2[2]'], col=rgb(0,0,1, alpha = 0.1))
+  abline(samplesMatrix[i,'w0_m2[1]'], samplesMatrix[i,'w1_m2[1]'], col=rgb(0,0,1, max = 1.0, alpha = 0.1))
+  abline(samplesMatrix[i,'w0_m2[2]'], samplesMatrix[i,'w1_m2[2]'], col=rgb(0,0,1, max = 1.0, alpha = 0.1))
 }
+
+# Because our prior odds are 0.5/0.5, the bayes factor is simply equal to posterior_model1 / posterior_model2
+# Bayes factor is really small, so we strongly prefer model 2
+bayes_factor = posterior_model1_mcmc / posterior_model2_mcmc
