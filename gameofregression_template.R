@@ -24,13 +24,10 @@ model {
     for (j in 1:p){
       w1[j] ~ dnorm(0, 1.0)
     }
-
-    for (i in 1:n){
-        mu[i] = w0 + inprod(t(w1[]),x[i])
-    }
    
     # Likelihood
     for (i in 1:n){
+    mu[i] = w0 + inprod(w1[],x[i])
     y[i] ~ dnorm(mu[i], t)
     }
 }
