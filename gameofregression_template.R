@@ -61,3 +61,5 @@ hist(samplesMatrix[,'w1[5]'], main = "Histogram of the posterior \ndistribution 
 # We clearly see that the size of the household with weight w3 (mean of -0.009) hardly influences the age of death.
 
 
+
+
