@@ -4,7 +4,6 @@ rm(list=ls())
 
 # Required packages for this exercise.
 
-rm(list=ls())
 require(rjags)
 require(coda)
 
@@ -51,12 +50,12 @@ samplesMatrix = as.matrix(samples)
 mcmcsummary_weights = summary(samples)
 mcmcsummary_weights$statistics
 
-hist(samplesMatrix[,'w0'], main = "Histogram of the posterior \ndistribution over w0 (intercept)", xlab = "w1")
-hist(samplesMatrix[,'w1[1]'], main = "Histogram of the posterior \ndistribution over w1 (of mention in n pages)", xlab = "w0")
-hist(samplesMatrix[,'w1[2]'], main = "Histogram of the posterior \ndistribution over w2 (of weddings attended)", xlab = "w1")
-hist(samplesMatrix[,'w1[3]'], main = "Histogram of the posterior \ndistribution over w3 (of size of household)", xlab = "w1")
-hist(samplesMatrix[,'w1[4]'], main = "Histogram of the posterior \ndistribution over w4 (of length in cm)", xlab = "w1")
-hist(samplesMatrix[,'w1[5]'], main = "Histogram of the posterior \ndistribution over w5 (of nr of 'winter is coming'said)", xlab = "w1")
+hist(samplesMatrix[,'w0'], main = "Histogram of the posterior \ndistribution over w0 (intercept)", xlab = "w0")
+hist(samplesMatrix[,'w1[1]'], main = "Histogram of the posterior \ndistribution over w1\n(mention in n pages)", xlab = "w1")
+hist(samplesMatrix[,'w1[2]'], main = "Histogram of the posterior \ndistribution over w2\n(weddings attended)", xlab = "w2")
+hist(samplesMatrix[,'w1[3]'], main = "Histogram of the posterior \ndistribution over w3\n(size of household)", xlab = "w3")
+hist(samplesMatrix[,'w1[4]'], main = "Histogram of the posterior \ndistribution over w4 (length in cm)", xlab = "w4")
+hist(samplesMatrix[,'w1[5]'], main = "Histogram of the posterior \ndistribution over w5\n(nr of 'winter is coming' said)", xlab = "w5")
 
 # We clearly see that the size of the household with weight w3 (mean of -0.009) hardly influences the age of death.
 
