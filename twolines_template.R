@@ -230,6 +230,9 @@ for (i in samples_m2){
   abline(samplesMatrix[i,'w0_m2[2]'], samplesMatrix[i,'w1_m2[2]'], col=rgb(0,0,1, max = 1.0, alpha = 0.1))
 }
 
+posterior_model1_mcmc
+posterior_model2_mcmc
+
 # Because our prior odds are 0.5/0.5, the bayes factor is simply equal to posterior_model1 / posterior_model2
 # Bayes factor is really small, so we strongly prefer model 2
-bayes_factor = posterior_model1_mcmc / posterior_model2_mcmc
+bayes_factor = posterior_model1_mcmc / posterior_model2_mcmc; bayes_factor
