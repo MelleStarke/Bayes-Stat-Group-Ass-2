@@ -60,6 +60,13 @@ hist(samplesMatrix[,'w1[5]'], main = "Histogram of the posterior \ndistribution 
 
 # We clearly see that the size of the household with weight w3 (mean of -0.009) hardly influences the age of death.
 
+#1.3.2 - 1, 0, 5, 184, 20
+new_char <- c(1,0,5,184,20)
+w0_pred <- mcmcsummary_weights$statistics[1,'Mean']
+w1_pred <- mcmcsummary_weights$statistics[2:6,'Mean']
+prediction1 <- w0_pred + w1_pred %*% new_char
+sprintf("the character is predicted to die at age %.1f", prediction1)
 
-
-
+new_char2 <- c(1,0,5,380,20)
+prediction2 <- w0_pred + w1_pred %*% new_char2
+sprintf("the character is predicted to die at age %.1f", prediction2)
