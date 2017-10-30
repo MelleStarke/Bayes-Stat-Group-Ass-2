@@ -27,11 +27,10 @@ model {
    
     # Likelihood
     for (i in 1:n){
-    mu[i] = w0 + inprod(w1[],x[i])
+    mu[i] = w0 + (inprod(t(w1[]),x[i,]))
     y[i] ~ dnorm(mu[i], t)
     }
 }
-
 "
 
 niter = 10000
@@ -45,9 +44,20 @@ jagsmodel <- jags.model(textConnection(linear_regression),
                         data = data,
                         n.chains = nchains)
 
-store_parameters = c('y') # you chose which parameters to monitor
+store_parameters = c('w0','w1') # you chose which parameters to monitor
 samples = coda.samples(jagsmodel, store_parameters, n.iter = niter)
 
 samplesMatrix = as.matrix(samples)
+mcmcsummary_weights = summary(samples)
+mcmcsummary_weights$statistics
+
+hist(samplesMatrix[,'w0'], main = "Histogram of the posterior \ndistribution over w0 (intercept)", xlab = "w1")
+hist(samplesMatrix[,'w1[1]'], main = "Histogram of the posterior \ndistribution over w1 (of mention in n pages)", xlab = "w0")
+hist(samplesMatrix[,'w1[2]'], main = "Histogram of the posterior \ndistribution over w2 (of weddings attended)", xlab = "w1")
+hist(samplesMatrix[,'w1[3]'], main = "Histogram of the posterior \ndistribution over w3 (of size of household)", xlab = "w1")
+hist(samplesMatrix[,'w1[4]'], main = "Histogram of the posterior \ndistribution over w4 (of length in cm)", xlab = "w1")
+hist(samplesMatrix[,'w1[5]'], main = "Histogram of the posterior \ndistribution over w5 (of nr of 'winter is coming'said)", xlab = "w1")
+
+# We clearly see that the size of the household with weight w3 (mean of -0.009) hardly influences the age of death.
 
 
