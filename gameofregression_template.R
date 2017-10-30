@@ -26,7 +26,7 @@ model {
     }
 
     for (i in 1:n){
-        mu[i] = w0 + inprod(t(w1),x[i])
+        mu[i] = w0 + inprod(t(w1[]),x[i])
     }
    
     # Likelihood
