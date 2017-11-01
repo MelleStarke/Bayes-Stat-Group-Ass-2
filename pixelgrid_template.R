@@ -17,7 +17,31 @@ plot_evidences = function(evidences, sortBy) {
   return(sorted)
 }
 
+likelihood_m2 <- function(w,y,x){
+  z <- list()
+  for (i in 1:9){
+    z[i] <- 1/(1+exp(-y[i]*w[1]*x[i,1]))
+  } 
+  return(Reduce('*',z,1))
+}
 
+likelihood_m3 <- function(w,y,x){
+  z <- list()
+  for(i in 1:9){
+    z[i] <- 1/(1 + exp(-y[i]*(w[1]*x[i,1]+w[2]*x[i,2])))
+  }
+  return(Reduce('*',z,1))
+}
+
+likelihood_m4 <- function(w,y,x){
+  z <- list()
+  for(i in 1:9){
+    z[i] <- 1/(1 + exp(-y[i]*(w[1] + w[2]*x[i,1] + w[3]*x[i,2]))) 
+  }
+  return(Reduce('*',z,1))
+}
+
+likelihoodz <- c(likelihood_m2,likelihood_m3,likelihood_m4)
 
 # Create all the possible data sets
 npixels = 9
@@ -45,7 +69,7 @@ x[9,] = c(1, -1)
 
 # Compute the evidences for each data set
 evidences = matrix(0, nrow = ndatasets, ncol = nmodels)
-evidences[,1] = ? # fill in
+evidences[,1] = 1/512 # fill in
 
 # Parameters for the prior weights
 mu = 0
@@ -64,18 +88,18 @@ for (d in 1:ndatasets) {
     evidence = 0
     for (s in 1:nsamples) {
       # get weights from prior
-      w = ? # fill in
-      pDwm = ? # fill in
+      w = rnorm(i-1,0,10) # fill in
+      pDwm = likelihoodz[[i-1]](w,y,x) # fill in
         
       
       
-      evidence = ? # fill in
+      evidence = evidence + pDwm # fill in
     }
-    evidences[d,i] = ? # fill in
+    evidences[d,i] = evidence / nsamples # fill in
   }
 }
 
-sorted_order = plot_evidences(evidences, sortBy=?)
+sorted_order = plot_evidences(evidences, sortBy= 2)
 
 
 
