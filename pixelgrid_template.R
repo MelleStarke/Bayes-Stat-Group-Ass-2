@@ -90,9 +90,6 @@ for (d in 1:ndatasets) {
       # get weights from prior
       w = rnorm(i-1,0,10) # fill in
       pDwm = likelihoodz[[i-1]](w,y,x) # fill in
-        
-      
-      
       evidence = evidence + pDwm # fill in
     }
     evidences[d,i] = evidence / nsamples # fill in
@@ -100,6 +97,20 @@ for (d in 1:ndatasets) {
 }
 
 sorted_order = plot_evidences(evidences, sortBy= 4)
+
+
+
+# Because we don't have a prior belief on which model will be best, the Bayes Factor can be calculated simply by calculating the proportion between the evidences.
+bayesfactor1_m0m3 <- evidences[511,1]/evidences[511,4]
+bayesfactor2_m0m3 <- evidences[512,1]/evidences[512,4]
+sprintf("Bayes factor of m0 vs m3 for dataset 511 %.5f", bayesfactor1_m0m3)
+sprintf("Bayes factor of m0 vs m3 for dataset 512 %.5f", bayesfactor2_m0m3)
+
+# Datapoints 511 and 512 (the very last two) are best explained by m3 (found by sorting the data matrix on model 3)
+# Datasets 511 represents the pixelgrid that only has the bottom right pixel not filled in.
+# Dataset 512 represent a completely filled in pixelgrid. 
+# For both these datasets, it makes sense that model 3 is able to draw the best regression line, because an offset is required to succesfully separate only one corner from the rest (in case of dataset 511) or draw a line at the border of the pixelgrid (in case of dataset 512).  
+
 
 indices_m0_over_m3 <- nrow(evidences[which(evidences[,1] > evidences[,4]),])
 
