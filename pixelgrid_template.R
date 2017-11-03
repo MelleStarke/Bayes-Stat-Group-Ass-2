@@ -114,3 +114,4 @@ for (i in 1:4){
   better_models[i] <- Reduce('+',preference_matrix[i,],0)
 }
 better_models <- unlist(better_models)
+sprintf("The best overall model is model %.0f and is better than other models in %f cases", which(better_models == max(better_models)), max(better_models))
