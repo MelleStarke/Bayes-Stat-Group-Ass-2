@@ -108,3 +108,10 @@ sorted_order = plot_evidences(evidences, sortBy= 4)
 #
 
 
+# Because we don't have a prior belief on which model will be best, the Bayes Factor can be calculated simply by calculating the proportion between the evidences.
+
+bayesfactor1_m0m3 <- evidences[511,1]/evidences[511,4]
+bayesfactor2_m0m3 <- evidences[512,1]/evidences[512,4]
+sprintf("Bayes factor of m0 vs m3 for dataset 511 %.5f", bayesfactor1_m0m3)
+sprintf("Bayes factor of m0 vs m3 for dataset 512 %.5f", bayesfactor2_m0m3)
+
