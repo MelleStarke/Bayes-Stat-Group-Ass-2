@@ -99,7 +99,7 @@ for (d in 1:ndatasets) {
   }
 }
 
-sorted_order = plot_evidences(evidences, sortBy= 2)
+sorted_order = plot_evidences(evidences, sortBy= 3)
 
 
 
