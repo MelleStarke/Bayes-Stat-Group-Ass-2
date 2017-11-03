@@ -99,7 +99,18 @@ for (d in 1:ndatasets) {
   }
 }
 
-sorted_order = plot_evidences(evidences, sortBy= 3)
+sorted_order = plot_evidences(evidences, sortBy= 4)
 
+indices_m0_over_m3 <- nrow(evidences[which(evidences[,1] > evidences[,4]),])
 
-
+preference_matrix <- matrix(nrow = 4, ncol = 4)
+for (i in 1:4){
+  for(j in 1:4){
+    preference_matrix[i,j] <- nrow(evidences[which(evidences[,i] > evidences[,j]),])
+    }
+  }
+better_models <- list()
+for (i in 1:4){
+  better_models[i] <- Reduce('+',preference_matrix[i,],0)
+}
+better_models <- unlist(better_models)
