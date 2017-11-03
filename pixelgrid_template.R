@@ -99,7 +99,12 @@ for (d in 1:ndatasets) {
   }
 }
 
-sorted_order = plot_evidences(evidences, sortBy= 3)
+sorted_order = plot_evidences(evidences, sortBy= 4)
 
+# Datapoints 511 and 512 (the very last two) are best explained by m3 (found by sorting the data matrix on model 3)
+# Datasets 511 represents the pixelgrid that only has the bottom right pixel not filled in.
+# Dataset 512 represent a completely filled in pixelgrid. 
+# For both these datasets, it makes sense that model 3 is able to draw the best regression line, because an offset is required to succesfully separate only one corner from the rest (in case of dataset 511) or draw a line at the border of the pixelgrid (in case of dataset 512).  
+#
 
 
